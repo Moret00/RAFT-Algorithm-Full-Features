@@ -67,7 +67,7 @@ This screenshot displays the log entries stored in a txt file. Each log entry in
 </p>
 
 - _Server 1 shutting down._ : This indicates that Server 1, which was recently elected as the leader, is shutting down. This can be part of another fault simulation or an intentional test.
-- _Server 2 shutting down. : Server 2, which had just synchronized logs with Server 1, is also shutting down. This would further disrupt the cluster.
+- _Server 2 shutting down._ : Server 2, which had just synchronized logs with Server 1, is also shutting down. This would further disrupt the cluster.
 - _Server 4 shutting down._ : Finally, Server 4 is shutting down. With Server 1, 2, and 4 down, only Server 3 (if it comes back online) and possibly other servers in the cluster are left active, which would likely lead to another election to restore leadership.
 
 All the code in this repository is commented to provide additional information and context. If you need any details or explanations, please refer to the comments within the code.
