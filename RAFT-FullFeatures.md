@@ -21,8 +21,7 @@ _SimulateFailure_ method: This feature simulates the failure of any server. The 
 _Leader election_: When a leader fails, other servers can detect the absence of heartbeats and automatically initiate a new election. This illustrates RAFT’s fault-tolerant capabilities, ensuring that the system continues to function even when some servers go offline.
 
 **Testing Highlights: Dynamic Cluster Reconfiguration**
-
-<br><br>
+<br>
 <p align="center">
   <img src="dynamicAddServer.png" alt="Example Image"/>
 </p>
@@ -38,3 +37,37 @@ This log represents the Dynamic Cluster Reconfiguration process in action, speci
 - _Server 2 sending heartbeats_ : This indicates that Server 2 is currently the leader of the cluster and is sending out periodic heartbeats to all other servers, including the newly added Server 4. The heartbeats are used to confirm leadership and prevent other servers from starting an election.
 
 - _Server 4 received heartbeat from server 2 and changed state to FOLLOWER_ : Upon receiving a heartbeat from Server 2, Server 4 confirms that Server 2 is the valid leader and remains in the FOLLOWER state. The heartbeat also ensures that Server 4 doesn't start a new election, since it knows the cluster is functioning correctly with a leader in place.<br><br>
+
+**Testing Highlights: Persistent Log Storage**
+<br>
+<p align="center">
+  <img src="backupFiles.png" alt="Example Image"/>
+</p>
+
+This screenshot displays the log entries stored in a txt file. Each log entry includes an ID, operation description, and timestamp. The entries represent the persistent log data captured during the RAFT simulation, illustrating how log entries are recorded and preserved for consistency and recovery. The repeated entries show multiple instances of log operations performed by the RAFT system.
+
+**Testing Highlights: Simulation failed**
+<br>
+<p align="center">
+  <img src="simulationFailed.png" alt="Example Image"/>
+</p>
+
+- _Server 3 is simulated as failed._ : This indicates that Server 3 has been simulated to fail, likely for the purpose of testing the RAFT algorithm's fault-tolerance capabilities. It means Server 3 is no longer participating in the cluster for now.
+- _Server starting election, term: 4_ : Due to the failure of Server 3, a server (likely Server 1 based on later logs) has detected that the cluster needs a new leader, so it starts an election for term 4.
+- _Server 2 received vote request from server 1 for term 4_ : Server 1 has requested votes from other servers to become the new leader. Server 2 receives this request for term 4.
+- _Server 2 updated term to 4 and changed state to FOLLOWER_ : Server 2 recognizes that this is a valid election for term 4, so it updates its term and transitions to the FOLLOWER state, since it’s no longer a candidate or leader.
+- _Server 1 received vote, total votes: 3_ : Server 1 successfully receives votes (from servers like Server 2) and collects enough votes to proceed with the election.
+- _Server 1 is now the leader for term 4!_ : With a majority of votes, Server 1 is elected as the new leader for term 4. This log confirms the completion of the election process.
+- _Server 1 sending heartbeats_ : As the new leader, Server 1 begins sending heartbeats to the other servers, confirming its leadership and ensuring no other elections are triggered.
+- _Log entry replicated to Server 2: LogEntry {id=0, operation='Operation 1', timestamp=2024-09-19T12:33:16.247602600Z}_ : The leader (Server 1) starts replicating log entries to Server 2. This log shows that an entry with ID=0 was successfully replicated.
+
+<br>
+<p align="center">
+  <img src="endSimulationFailed.png" alt="Example Image"/>
+</p>
+
+- _Server 1 shutting down._ : This indicates that Server 1, which was recently elected as the leader, is shutting down. This can be part of another fault simulation or an intentional test.
+- _Server 2 shutting down. : Server 2, which had just synchronized logs with Server 1, is also shutting down. This would further disrupt the cluster.
+- _Server 4 shutting down._ : Finally, Server 4 is shutting down. With Server 1, 2, and 4 down, only Server 3 (if it comes back online) and possibly other servers in the cluster are left active, which would likely lead to another election to restore leadership.
+
+All the code in this repository is commented to provide additional information and context. If you need any details or explanations, please refer to the comments within the code.
